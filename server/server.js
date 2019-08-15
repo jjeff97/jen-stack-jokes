@@ -36,6 +36,36 @@ let jokes = [
 
 // serve back static files
 app.use(express.static('server/public'));
+app.use(bodyParser.urlencoded({extended: true}));
+app.use(bodyParser.json());
+
+app.get('/jokes', (req,res) => {
+  res.send(trains); //array
+});
+
+app.post('/jokes', (req,res) => {
+  const newJoke = req.body;
+  joke.push(newJoke);
+  res.send('All good');
+});
+
+app.get('/first-joke', (req,res) => {
+  res.send(jokes[0]); //object
+})
+
+app.get('/last-joke', (req,res) => {
+  res.send(jokes[jokes.length - 1]); //object
+});
+
+app.get('/count', (req,res) => {
+  res.send({totalCount: jokes.length});
+})
+
+app.get('/random', (req,res) => {
+  const ranNumber = randomNumber(0, jokes.length-1);
+  const randomJoke = trains[ranNumber];
+  res.send(randomJokes);
+})
 
 app.listen(PORT, function(){
   console.log('server running on: ', PORT);
