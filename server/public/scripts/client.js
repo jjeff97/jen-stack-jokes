@@ -1,4 +1,5 @@
 
+const jokes = []; 
 
 console.log('client.js sourced');
 
@@ -7,28 +8,23 @@ $( document ).ready( onReady );
 function onReady() {
     console.log('DOM ready');
     $('#addJokeButton').on('click', submitJoke);
-    getJokes();
+    
 }
 
-function submitJoke(event){
-    event.preventDefault();
+function submitJoke(){
+    render()
+    
+    
 
-    const formArray = $(this).serializeArray();
-
-    const dataForServer = {
+    const newJoke = {
         whoseJoke: $('#whoseJokeIn').val(),
         jokeQuestion: $('#questionIn').val(),
         punchLine: $('#punchLineIn').val(),
-    }:
-    console.log(dataForServer);
+    }
+    console.log(newJoke) 
+    
+    jokes.push(newJoke);
 
-    $.ajax({
-        type: 'POST',
-        url: '/jokes',
-        data: dataForServer,
-    }).then(function(response) {
-        getJokes();
-    });
     
 }
 
@@ -36,22 +32,33 @@ function getJokes() {
     $.ajax({
         type: 'GET',
         url: '/jokes',
-        data: dataForServer,
+        data: newJoke,
 
     }).then(function(response){
         getJokes();
     });
 }
 
-function render(response) {
-    const listOfJokes = response;
+function render(listOfJokes) {
+    $('#outputDiv').empty();
     for(let joke of listOfJokes) {
         $('.outputDiv').append(`
         <div>
-            <p>${joke.whoseJoke}</p>
-            <p>${joke.jokeQuestion}</p>
-            <p>${joke.punchLine}</p>
+            <p>${joke.whoseJokeIn}</p>
+            <p>${joke.jokeQuestionIn}</p>
+            <p>${joke.punchLineIn}</p>
         </div>
         `)
     }
+}
+
+
+function postJokes(){
+    $.ajax({
+        type: 'POST',
+        url: '/jokes',
+        data: newJoke,
+    }).then((response) => {
+        getJokes();
+    });
 }
