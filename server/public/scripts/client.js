@@ -1,64 +1,73 @@
 
-const jokes = []; 
+const jokeObject= {
+    whoseJoke:'',
+    jokeQuestion:'',
+    punchLine: '',
+}; 
 
 console.log('client.js sourced');
 
-$( document ).ready( onReady );
+$( document ).ready( init);
 
-function onReady() {
+function init() {
     console.log('DOM ready');
-    $('#addJokeButton').on('click', submitJoke);
-    
+    $('.addJokeButton').on('click', submitJoke);
+    $('.js-clear').on('click', clickClear);
 }
 
 function submitJoke(){
     render()
-    
-    
-
-    const newJoke = {
-        whoseJoke: $('#whoseJokeIn').val(),
-        jokeQuestion: $('#questionIn').val(),
-        punchLine: $('#punchLineIn').val(),
+     const newJoke = {
+        whoseJoke: $('.whoseJoke').val(),
+        jokeQuestion: $('.jokeQuestion').val(),
+        punchLine: $('.punchLine').val(),
     }
-    console.log(newJoke) 
+    console.log(newJoke());
     
     jokes.push(newJoke);
 
     
 }
 
-function getJokes() {
-    $.ajax({
-        type: 'GET',
-        url: '/jokes',
-        data: newJoke,
-
-    }).then(function(response){
-        getJokes();
-    });
-}
-
-function render(listOfJokes) {
-    $('#outputDiv').empty();
-    for(let joke of listOfJokes) {
-        $('.outputDiv').append(`
-        <div>
-            <p>${joke.whoseJokeIn}</p>
-            <p>${joke.jokeQuestionIn}</p>
-            <p>${joke.punchLineIn}</p>
-        </div>
-        `)
-    }
-}
-
-
 function postJokes(){
     $.ajax({
         type: 'POST',
         url: '/jokes',
-        data: newJoke,
+        data: jokeObject,
     }).then((response) => {
         getJokes();
     });
 }
+
+function getJokes() {
+    $.ajax({
+        type: 'GET',
+        url: '/jokes'
+
+    }).then(function(response){
+        render(response);
+    });
+}
+function clickClear(event) {
+    console.log('Clear');
+    $('.whoseJoke').val('');
+    $('.jokeQuestion').val('');
+    $('.punchLine').val('');
+
+}
+
+function render(response) {
+    const Jokes = response;
+    $('.outputDiv').empty();
+    for(let joke of Jokes) {
+        $('.outputDiv').append(`
+        <div>
+            <p>${joke.whoseJoke}</p>
+            <p>${joke.jokeQuestion}</p>
+            <p>${joke.punchLine}</p>
+        </div>
+        `);
+    }
+}
+
+

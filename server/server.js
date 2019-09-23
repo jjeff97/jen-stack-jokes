@@ -44,15 +44,15 @@ app.get('/jokes', (req,res) => {
 });
 
 app.post('/jokes', (req,res) => {
-  console.log(req.body);
+  console.log('POST:', req.body);
 
-  const jokesObject = {
+  const jokeObject = {
       whoseJoke: req.body.whoseJoke,
       jokeQuestion: req.body.jokeQuestion,
       punchLine: req.body.punchLine,
   }
 
-  jokes.push(jokesObject);
+  jokes.push(jokeObject);
   res.sendStatus(201);
 })
 
