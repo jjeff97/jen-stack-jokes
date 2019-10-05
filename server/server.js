@@ -34,27 +34,19 @@ let jokes = [
   }
 ];
 
-// serve back static files
-app.use(express.static('server/public'));
-
-app.use(bodyParser.json());
 
 app.get('/jokes', (req,res) => {
-  res.send(peopleArray);
+  res.send(jokes);
 });
 
 app.post('/jokes', (req,res) => {
-  console.log('POST:', req.body);
+  const newJoke = req.body;
+  jokes.push(newJoke);
+  res.sendStatus(200);
+});
+  
 
-  const jokeObject = {
-      whoseJoke: req.body.whoseJoke,
-      jokeQuestion: req.body.jokeQuestion,
-      punchLine: req.body.punchLine,
-  }
-
-  jokes.push(jokeObject);
-  res.sendStatus(201);
-})
+app.use(express.static('server/public'));
 
 app.listen(PORT, function(){
   console.log('server running on: ', PORT);

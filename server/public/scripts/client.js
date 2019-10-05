@@ -1,42 +1,36 @@
 
-const jokeObject= {
-    whoseJoke:'',
-    jokeQuestion:'',
-    punchLine: '',
-}; 
+
 
 console.log('client.js sourced');
 
-$( document ).ready( init);
+$(document).ready(onReady);
 
-function init() {
+function onReady() {
     console.log('DOM ready');
-    $('.addJokeButton').on('click', submitJoke);
-    $('.js-clear').on('click', clickClear);
+
+    $('#addJokeButton').on('click', addNewJoke);
+    getJokes();
 }
 
-function submitJoke(){
-    render()
-     const newJoke = {
-        whoseJoke: $('.whoseJoke').val(),
-        jokeQuestion: $('.jokeQuestion').val(),
-        punchLine: $('.punchLine').val(),
-    }
-    console.log(newJoke());
-    
-    jokes.push(newJoke);
+function addNewJoke() {
+    const whoseJoke = $('#whoseJokeIn').val();
+    const jokeQuestion = $('#jokeQuestionIn').val();
+    const punchLine = $('#punchLineIn').val();
 
-    
+    const jokeObject = {
+        whoseJoke,
+        jokeQuestion,
+        punchLine,
+    };
+    clearInputs();
+    postJokes(jokeObject);
+
 }
+function clearInputs() {
+    $('#whoseJokeIn').val(null);
+    $('#jokeQuestionIn').val('');
+    $('#punchLineIn').val('');
 
-function postJokes(){
-    $.ajax({
-        type: 'POST',
-        url: '/jokes',
-        data: jokeObject,
-    }).then((response) => {
-        getJokes();
-    });
 }
 
 function getJokes() {
@@ -44,30 +38,45 @@ function getJokes() {
         type: 'GET',
         url: '/jokes'
 
-    }).then(function(response){
+    }).then(function (response) {
         render(response);
     });
 }
-function clickClear(event) {
-    console.log('Clear');
-    $('.whoseJoke').val('');
-    $('.jokeQuestion').val('');
-    $('.punchLine').val('');
 
+// param { object } newJoke
+// @param { string } newJoke.whoseJoke
+// @param { string } newJoke.jokeQuestion
+// @param { string } newJoke.punchLine
+
+function postJokes(newJoke) {
+    $.ajax({
+        type: 'POST',
+        url: '/jokes',
+        data: newJoke
+    }).then((response) => {
+        getJokes();
+    });
 }
+// @param { array } jokeArray
 
-function render(response) {
-    const Jokes = response;
-    $('.outputDiv').empty();
-    for(let joke of Jokes) {
-        $('.outputDiv').append(`
-        <div>
-            <p>${joke.whoseJoke}</p>
-            <p>${joke.jokeQuestion}</p>
-            <p>${joke.punchLine}</p>
-        </div>
-        `);
+
+function render(jokeArray) {
+    $('#outputDiv').empty();
+    for (let joke of jokeArray) {
+        $('#outputDiv').append(`
+       
+                
+            <div>
+                <p>${joke.whoseJoke}</p>
+                <p>${joke.jokeQuestion}</p>
+                <p><i> - ${joke.punchLine}</i></p>
+                <hr />
+            </div>
+    `);
     }
 }
+
+
+
 
 
